@@ -13,9 +13,6 @@ import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.List;
 
-/**
- * @author Denis Zhdanov
- */
 @SuppressWarnings({"UnusedDeclaration"})
 // TODO den remove
 @Ignore

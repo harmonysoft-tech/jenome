@@ -11,10 +11,6 @@ import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.util.Collection;
 
-/**
- * @author Denis Zhdanov
- * @since 11/21/2009
- */
 @SuppressWarnings({"UnusedDeclaration"})
 public class TypeVariableComplianceMatcherTest {
 

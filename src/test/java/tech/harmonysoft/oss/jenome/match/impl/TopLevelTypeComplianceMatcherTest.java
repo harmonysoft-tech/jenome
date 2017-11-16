@@ -10,10 +10,6 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Collection;
 
-/**
- * @author Denis Zhdanov
- * @since 11/21/2009
- */
 @SuppressWarnings({"UnusedDeclaration"})
 public class TopLevelTypeComplianceMatcherTest {
 

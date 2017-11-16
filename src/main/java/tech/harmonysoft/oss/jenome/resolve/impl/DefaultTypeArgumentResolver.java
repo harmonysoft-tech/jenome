@@ -22,7 +22,7 @@ public class DefaultTypeArgumentResolver implements TypeArgumentResolver {
     public static final DefaultTypeArgumentResolver INSTANCE = new DefaultTypeArgumentResolver();
 
     /** Builds actual type arguments mappings. */
-    private final TypeVisitor typeArgumentsMappingBuilder = new TypeVisitorAdapter() {
+    private final TypeVisitor typeArgumentsMapper = new TypeVisitorAdapter() {
         @Override
         public void visitParameterizedType(@NotNull ParameterizedType type) {
             rememberMappings(type);
@@ -122,7 +122,7 @@ public class DefaultTypeArgumentResolver implements TypeArgumentResolver {
         }
 
         private String getErrorMessage(Class<?> targetClass) {
-            return String.format("Type argument resolving rule from '%s' type undefined", targetClass);
+            return String.format("Type argument resolving rule from '%s' type is undefined", targetClass);
         }
     };
 
@@ -139,32 +139,16 @@ public class DefaultTypeArgumentResolver implements TypeArgumentResolver {
         }
     };
 
-    private final ThreadLocal<Map<Type, Type>> classArgumentsMap = new ThreadLocal<Map<Type, Type>>() {
-        @Override
-        protected Map<Type, Type> initialValue() {
-            return new LinkedHashMap<Type, Type>();
-        }
-    };
+    private final ThreadLocal<Map<Type, Type>> classArgumentsMap = ThreadLocal.withInitial(LinkedHashMap::new);
 
-    private final ThreadLocal<Map<Type, Type>> interfaceArgumentsMap = new ThreadLocal<Map<Type, Type>>() {
-        @Override
-        protected Map<Type, Type> initialValue() {
-            return new LinkedHashMap<Type, Type>();
-        }
-    };
+    private final ThreadLocal<Map<Type, Type>> interfaceArgumentsMap = ThreadLocal.withInitial(LinkedHashMap::new);
 
-    private final ThreadLocal<Map<Type, Type>> tempMap = new ThreadLocal<Map<Type, Type>>() {
-        @Override
-        protected Map<Type, Type> initialValue() {
-            return new LinkedHashMap<Type, Type>();
-        }
-    };
+    private final ThreadLocal<Map<Type, Type>> tempMap = ThreadLocal.withInitial(LinkedHashMap::new);
 
-    private final ThreadLocal<Boolean> interfaceFlag = new ThreadLocal<Boolean>();
-    private final ThreadLocal<Boolean> matched = new ThreadLocal<Boolean>();
-    private final ThreadLocal<Class<?>> baseClass = new ThreadLocal<Class<?>>();
-    private final AtomicReference<TypeDispatcher> typeDispatcher
-                                                     = new AtomicReference<TypeDispatcher>(TypeDispatcher.INSTANCE);
+    private final ThreadLocal<Boolean> interfaceFlag = new ThreadLocal<>();
+    private final ThreadLocal<Boolean> matched = new ThreadLocal<>();
+    private final ThreadLocal<Class<?>> baseClass = new ThreadLocal<>();
+    private final AtomicReference<TypeDispatcher> typeDispatcher = new AtomicReference<>(TypeDispatcher.INSTANCE);
 
     @NotNull
     @Override
@@ -186,7 +170,7 @@ public class DefaultTypeArgumentResolver implements TypeArgumentResolver {
 
         typeDispatcher.get().dispatch(target, interfaceFlagInitializer);
         matched.set(false);
-        typeDispatcher.get().dispatch(target, typeArgumentsMappingBuilder);
+        typeDispatcher.get().dispatch(target, typeArgumentsMapper);
 
         if (!matched.get()) {
             throw new IllegalArgumentException(String.format(
@@ -223,6 +207,9 @@ public class DefaultTypeArgumentResolver implements TypeArgumentResolver {
 
     private void rememberRawMappings(@NotNull Class<?> rawClass) {
         Type[] typeVariables = rawClass.getTypeParameters();
+        if (typeVariables.length <= 0) {
+            return;
+        }
         Type[] rawVariables = new Type[typeVariables.length];
         Arrays.fill(rawVariables, RAW_TYPE);
         rememberMappings(typeVariables, rawVariables);

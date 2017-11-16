@@ -1,23 +1,21 @@
 package tech.harmonysoft.oss.jenome.resolve.impl;
 
-import static org.junit.Assert.*;
-
+import org.jetbrains.annotations.NotNull;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import tech.harmonysoft.oss.jenome.resolve.TypeArgumentResolver;
-import org.junit.Before;
-import org.junit.After;
-import org.junit.Test;
-import org.jmock.Mockery;
 
-import java.io.*;
+import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.util.Collection;
 import java.util.List;
 
-/**
- * @author Denis Zhdanov
- */
+import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 @SuppressWarnings({"RawUseOfParameterizedType", "unchecked", "UnusedDeclaration", "serial"})
 public class DefaultTypeArgumentResolverTest {
 
@@ -26,64 +24,58 @@ public class DefaultTypeArgumentResolverTest {
     private final ParameterizedType testInterfaceImplType
             = (ParameterizedType) ParameterizedChild.class.getGenericSuperclass();
     private DefaultTypeArgumentResolver resolver;
-    private Mockery mockery;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         resolver = new DefaultTypeArgumentResolver();
-        mockery = new Mockery();
     }
 
-    @After
-    public void tearDown() {
-        mockery.assertIsSatisfied();
-    }
-
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void toWildCardType() throws NoSuchFieldException {
         class Test {
             public Collection<? extends Comparable<Number>> field;
         }
 
         Type type = ((ParameterizedType)Test.class.getField("field").getGenericType()).getActualTypeArguments()[0];
-        resolver.resolve(type, Integer.class, 0);
+        assertThrows(IllegalArgumentException.class, () -> resolver.resolve(type, Integer.class, 0));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void toGenericArrayType() throws NoSuchFieldException {
         class Test<T> implements TestInterface<T[], Integer, String>{}
 
         Type type = ((ParameterizedType)Test.class.getGenericInterfaces()[0]).getActualTypeArguments()[0];
-        resolver.resolve(type, Integer.class, 0);
+        assertThrows(IllegalArgumentException.class, () -> resolver.resolve(type, Integer.class, 0));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void toTypeVariable() throws NoSuchFieldException {
         class Test<T>{}
 
         Type type = Test.class.getTypeParameters()[0];
-        resolver.resolve(type, Integer.class, 0);
+        assertThrows(IllegalArgumentException.class, () -> resolver.resolve(type, Integer.class, 0));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void toVariable() throws NoSuchFieldException {
         Type type = new Type() {};
-        resolver.resolve(type, Integer.class, 0);
+        assertThrows(IllegalArgumentException.class, () -> resolver.resolve(type, Integer.class, 0));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void toIncompatibleTypes() {
-        resolver.resolve(TestInterface.class, Integer.class, 0);
+        assertThrows(IllegalArgumentException.class,
+                     () -> resolver.resolve(TestInterface.class, Integer.class, 0));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void negativeIndex() {
-        resolver.resolve(Comparable.class, Integer.class, -1);
+        assertThrows(IllegalArgumentException.class, () ->resolver.resolve(Comparable.class, Integer.class, -1));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void indexOutOfBounds() {
-        resolver.resolve(Comparable.class, Integer.class, 1);
+        assertThrows(IllegalArgumentException.class, () -> resolver.resolve(Comparable.class, Integer.class, 1));
     }
 
     @Test
@@ -120,7 +112,7 @@ public class DefaultTypeArgumentResolverTest {
         class Sub1<A, B, C> implements SubInterface2<A, C, B> {}
         class Sub2<A, C> extends Sub1<String, C, A> implements Comparable<A>{
             @Override
-            public int compareTo(A o) {
+            public int compareTo(@NotNull A o) {
                 return 0;
             }
         }

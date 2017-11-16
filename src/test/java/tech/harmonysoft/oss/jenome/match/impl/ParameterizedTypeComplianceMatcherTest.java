@@ -8,9 +8,6 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- * @author Denis Zhdanov
- */
 @SuppressWarnings({"UnusedDeclaration", "SuppressionAnnotation", "RawUseOfParameterizedType"})
 public class ParameterizedTypeComplianceMatcherTest {
 

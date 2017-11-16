@@ -12,10 +12,6 @@ import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
 import java.util.*;
 
-/**
- * @author Denis Zhdanov
- * @since 11/22/2009
- */
 @SuppressWarnings({"UnusedDeclaration", "serial"})
 public class WildcardTypeComplianceMatcherTest {
 

@@ -1,7 +1,8 @@
 package tech.harmonysoft.oss.jenome.resolve.util;
 
-import org.junit.Before;
-import org.junit.Test;
+
+import org.jetbrains.annotations.NotNull;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.lang.reflect.GenericArrayType;
@@ -9,41 +10,37 @@ import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 
 import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-/**
- * @author Denis Zhdanov
- */
 @SuppressWarnings({"UnusedDeclaration"})
 public class GenericsHelperTest {
 
-    private GenericsHelper helper;
+    private GenericsHelper helper = new GenericsHelper();
 
-    @Before
-    @SuppressWarnings("unchecked")
-    public void setUp() throws Exception {
-        helper = new GenericsHelper();
-    }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void inconsistentClassAndInterface() {
-        helper.resolveTypeParameterValue(Comparable.class, new Object(), 0);
+        assertThrows(IllegalArgumentException.class,
+                     () -> helper.resolveTypeParameterValue(Comparable.class, new Object(), 0));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void tooBigTypeParameterIndex() {
-        helper.resolveTypeParameterValue(Comparable.class, "", 1);
+        assertThrows(IllegalArgumentException.class,
+                     () -> helper.resolveTypeParameterValue(Comparable.class, "", 1));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void negativeTypeParameterIndex() {
-        helper.resolveTypeParameterValue(Comparable.class, "", -1);
+        assertThrows(IllegalArgumentException.class,
+                     () -> helper.resolveTypeParameterValue(Comparable.class, "", -1));
     }
 
     @Test
     public void directNonGenericImplementation() {
         class Test implements Comparable<String> {
             @Override
-            public int compareTo(String o) {
+            public int compareTo(@NotNull String o) {
                 return 0;
             }
         }
@@ -54,7 +51,7 @@ public class GenericsHelperTest {
     public void directGenericImplementation() {
         class Test<T> implements Comparable<T> {
             @Override
-            public int compareTo(T o) {
+            public int compareTo(@NotNull T o) {
                 return 0;
             }
         }
@@ -69,7 +66,7 @@ public class GenericsHelperTest {
     public void indirectNonGenericImplementation() {
         class Parent<T> implements Comparable<T> {
             @Override
-            public int compareTo(T o) {
+            public int compareTo(@NotNull T o) {
                 return 0;
             }
         }
@@ -81,7 +78,7 @@ public class GenericsHelperTest {
     public void indirectGenericImplementation() {
         class Parent<T> implements Comparable<T> {
             @Override
-            public int compareTo(T o) {
+            public int compareTo(@NotNull T o) {
                 return 0;
             }
         }
@@ -98,7 +95,7 @@ public class GenericsHelperTest {
     public void mixedNonGenericTypeVariablesOrder() {
         class Parent<F, S, T> implements Comparable<S> {
             @Override
-            public int compareTo(S o) {
+            public int compareTo(@NotNull S o) {
                 return 0;
             }
         }
@@ -112,7 +109,7 @@ public class GenericsHelperTest {
     public void mixedGenericTypeVariablesOrder() {
         class Parent<F, S, T> implements Comparable<S> {
             @Override
-            public int compareTo(S o) {
+            public int compareTo(@NotNull S o) {
                 return 0;
             }
         }
@@ -133,7 +130,7 @@ public class GenericsHelperTest {
     public void rawGenericImplementationClassType() {
         class Parent<T> implements Comparable<T> {
             @Override
-            public int compareTo(T o) {
+            public int compareTo(@NotNull T o) {
                 return 0;
             }
         }
@@ -145,7 +142,7 @@ public class GenericsHelperTest {
     public void rawInterfaceAndGenericImplementation() {
         class Test<T> implements Comparable {
             @Override
-            public int compareTo(Object o) {
+            public int compareTo(@NotNull Object o) {
                 return 0;
             }
         }
@@ -156,7 +153,7 @@ public class GenericsHelperTest {
     public void rawInterfaceAndNonGenericImplementation() {
         class Test implements Comparable {
             @Override
-            public int compareTo(Object o) {
+            public int compareTo(@NotNull Object o) {
                 return 0;
             }
         }
@@ -167,7 +164,7 @@ public class GenericsHelperTest {
     public void boundWildcardGenericImplementation() {
         class Test<T extends Number> implements Comparable<T> {
             @Override
-            public int compareTo(T o) {
+            public int compareTo(@NotNull T o) {
                 return 0;
             }
         }
@@ -183,7 +180,7 @@ public class GenericsHelperTest {
     public void genericArrayType() {
         class Test<T> implements Comparable<T[]> {
             @Override
-            public int compareTo(T[] o) {
+            public int compareTo(@NotNull T[] o) {
                 return 0;
             }
         }
