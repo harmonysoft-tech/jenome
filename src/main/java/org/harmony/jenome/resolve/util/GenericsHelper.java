@@ -1,76 +1,71 @@
 package org.harmony.jenome.resolve.util;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.util.Stack;
 
 /**
- * Holds various generics processing-related utility methods.
- * <p/>
- * This class is not singleton but offers single-point-of-usage field {@link #INSTANCE}.
- * <p/>
- * Thread-safe.
- *
- * @author Denis Zhdanov
+ * <p>Holds various generics processing-related utility methods.</p>
+ * <p>This class is not singleton but offers single-point-of-usage field {@link #INSTANCE}.</p>
+ * <p>Thread-safe.</p>
  */
 public class GenericsHelper {
 
     public static final GenericsHelper INSTANCE = new GenericsHelper();
 
     /**
-     * Assumes that class of given <code>'target'</code> object implements given generic
-     * <code>'target interface'</code> and retrieves actual type of generic parameter of that target interface
-     * for the given index.
-     * <p/>
-     * There is a possible case that 'raw' implementation class is used instead of generic one
-     * (e.g. consider the following hierarchy:
+     * <p>
+     *      Assumes that class of given {@code 'target'} object implements given generic
+     *      {@code 'target interface'} and retrieves actual type of generic parameter of that target interface
+     *      for the given index.
+     * </p>
+     * <p>
+     *      There is a possible case that 'raw' implementation class is used instead of generic one
+     *      (e.g. consider the following hierarchy:
+     * </p>
      * <pre>
      * class Parent<T> implements Comparable<T> { // ... implementation}
      * class Child extends Parent {}
      * </pre>
-     * Here <code>'Child'</code> class uses <code>'raw'</code> version of <code>'Parent'</code> class).
-     * <code>'Object.class'</code> is returned then.
+     * <p>
+     *      Here {@code 'Child'} class uses {@code 'raw'} version of {@code 'Parent'} class).
+     *      {@code 'Object.class'} is returned then.
+     * </p>
      *
      * @param targetInterface   target generic interface which type parameter we're interested in
      * @param target            target object that is assumed to implement given interface
      * @param index             target type parameter index (first index starts with zero)
      * @return                  type parameter of the given generic interface for the given index
-     * @throws IllegalArgumentException     if any given reference is null or given index is negative or given
-     *                                      interface is not generic or class of the given object doesn't implement
-     *                                      given interface or given interface doesn't have enough type parameters
-     *                                      as implied by the given index
+     * @throws IllegalArgumentException     if given index is negative or given interface is not generic or
+     *                                      given object's class doesn't implement given interface or given
+     *                                      interface doesn't have enough type parameters as implied
+     *                                      by the given index
      */
-    public Type resolveTypeParameterValue(Class<?> targetInterface, Object target, int index)
+    @NotNull
+    public Type resolveTypeParameterValue(@NotNull Class<?> targetInterface, @NotNull Object target, int index)
             throws IllegalArgumentException
     {
 
-        if (targetInterface == null) {
-            throw new IllegalArgumentException("Can't derive target type parameter. Reason: given interface is null");
-        }
-
-        if (target == null) {
-            throw new IllegalArgumentException(String.format("Can't derive type parameter #%d of the '%s' "
-                                                             + "interface for the target object. Reason: given object is null", index, targetInterface));
-        }
-
         if (!targetInterface.isAssignableFrom(target.getClass())) {
-            throw new IllegalArgumentException(String.format("Can't derive type parameter #%d of the '%s' "
-                                                             + "interface for the object of class '%s'. Reason: there is no IS-A relation between them",
-                                                             index, targetInterface, target.getClass()));
+            throw new IllegalArgumentException(String.format(
+                    "Can't derive type parameter #%d of the '%s' interface for the object of class '%s'. "
+                    + "Reason: there is no IS-A relation between them", index, targetInterface, target.getClass()));
         }
 
         if (index < 0) {
-            throw new IllegalArgumentException(String.format("Can't derive target type parameter of the '%s' "
-                                                             + "interface for the object of class '%s'. Reason: given index is negative (%d)",
-                                                             targetInterface, target.getClass(), index));
+            throw new IllegalArgumentException(String.format(
+                    "Can't derive target type parameter of the '%s' interface for the object of class '%s'. "
+                    + "Reason: given index is negative (%d)", targetInterface, target.getClass(), index));
         }
 
         if (targetInterface.getTypeParameters().length <= index) {
-            throw new IllegalArgumentException(String.format("Can't derive type parameter #%d of the '%s' "
-                                                             + "interface for the object of class '%s'. Reason: given interface doesn't have enough "
-                                                             + "type parameters (%d type parameters are found)",
-                                                             index, targetInterface, target.getClass(), targetInterface.getTypeParameters().length));
+            throw new IllegalArgumentException(String.format(
+                    "Can't derive type parameter #%d of the '%s' interface for the object of class '%s'. "
+                    + "Reason: given interface doesn't have enough type parameters (%d type parameters are found)",
+                    index, targetInterface, target.getClass(), targetInterface.getTypeParameters().length));
         }
 
         // The algorithm is the follows:
@@ -102,19 +97,22 @@ public class GenericsHelper {
     }
 
     /**
-     * Allows to build stack of classes started from the given and ending by its first direct or indirect parent
-     * that explicitly implements given interface.
-     * <p/>
-     * Note that target parent class is located at the top of resulting classes stack.
-     * <p/>
-     * Also note that it's assumed that given class IS-A given interface.
+     * <p>
+     *      Allows to build stack of classes started from the given and ending by its first direct or indirect parent
+     *      that explicitly implements given interface.
+     * </p>
+     * <p>Note that target parent class is located at the top of resulting classes stack.</p>
+     * <p>Also note that it's assumed that given class IS-A given interface.</p>
      *
      * @param targetInterface   target interface
      * @param startClass        class that is assumed to implements given interface
      * @return                  stack of the given class and its ancestors finishing by the class that directly
      *                          implements given interface
      */
-    private Stack<Class<?>> getHierarchyFromDirectImplementation(Class<?> targetInterface, Class<?> startClass) {
+    @NotNull
+    private Stack<Class<?>> getHierarchyFromDirectImplementation(@NotNull Class<?> targetInterface,
+                                                                 @NotNull Class<?> startClass)
+    {
         assert targetInterface.isAssignableFrom(startClass);
         Stack<Class<?>> result = new Stack<Class<?>>();
         Class<?> classToCheck = startClass;
@@ -131,20 +129,25 @@ public class GenericsHelper {
     }
 
     /**
-     * This method assumes that given type variable belongs to the parameterized type that is located
-     * on top of the given classes stack and that the stack holds particular classes hierarchy (parent is assumed
-     * to be located at the top of the stack).
-     * <p/>
-     * It tries to resolve given type variable to any type that is not a type variable (e.g. concrete type class).
-     * <p/>
-     * If the method detects that one of the classes from the given hierarchy is not parameterized, it returns
-     * <code>'Object.class'</code>.
+     * <p>
+     *      This method assumes that given type variable belongs to the parameterized type that is located
+     *      on top of the given classes stack and that the stack holds particular classes hierarchy (parent
+     *      is assumed to be located at the top of the stack).
+     * </p>
+     * <p>
+     *     It tries to resolve given type variable to any type that is not a type variable (e.g. concrete type class).
+     * </p>
+     * <p>
+     *     If the method detects that one of the classes from the given hierarchy is not parameterized, it returns
+     *      {@code 'Object.class'}.
+     * </p>
      *
      * @param classes           target classes hierarchy
      * @param targetVariable    type variable to resolve
-     * @return                  resolved type variable if any; <code>'Object.class'</code> otherwise
+     * @return                  resolved type variable if any; {@code 'Object.class'} otherwise
      */
-    private Type resolveTypeVariable(Stack<Class<?>> classes, TypeVariable targetVariable) {
+    @NotNull
+    private Type resolveTypeVariable(@NotNull Stack<Class<?>> classes, @NotNull TypeVariable targetVariable) {
         Type result = null;
         while (!classes.isEmpty()) {
             int typeVariableIndex = -1;

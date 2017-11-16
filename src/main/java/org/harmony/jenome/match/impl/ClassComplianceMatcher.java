@@ -3,28 +3,27 @@ package org.harmony.jenome.match.impl;
 import org.harmony.jenome.match.TypeComplianceMatcher;
 import org.harmony.jenome.resolve.TypeVisitor;
 import org.harmony.jenome.resolve.impl.TypeVisitorAdapter;
+import org.harmony.jenome.resolve.util.GenericsHelper;
+import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.*;
 
 /**
- * Allows to check if particular class may be matched to particular type.
- * <p/>
- * Provides actual functionality described at the contract of {@link GenericsHelper#match(Type, Class)} method.
- * <p/>
- * Thread-safe.
- *
- * @author Denis Zhdanov
+ * <p>Allows to check if particular class may be matched to particular type.</p>
+ * // TODO den fix
+ * <p>Provides actual functionality described at the contract of {@link GenericsHelper#match(Type, Class)} method.</p>
+ * <p>Thread-safe.</p>
  */
 public class ClassComplianceMatcher extends AbstractDelegatingTypeComplianceMatcher<Class<?>> {
 
     private final TypeVisitor visitor = new TypeVisitorAdapter() {
         @Override
-        public void visitParameterizedType(ParameterizedType type) {
+        public void visitParameterizedType(@NotNull ParameterizedType type) {
             setMatched(getDelegate().match(getBaseType(), type.getRawType()));
         }
 
         @Override
-        public void visitWildcardType(WildcardType type) {
+        public void visitWildcardType(@NotNull WildcardType type) {
             for (Type upperBoundType : type.getUpperBounds()) {
                 if (!getDelegate().match(getBaseType(), upperBoundType, true)) {
                     return;
@@ -35,7 +34,7 @@ public class ClassComplianceMatcher extends AbstractDelegatingTypeComplianceMatc
         }
 
         @Override
-        public void visitGenericArrayType(GenericArrayType type) {
+        public void visitGenericArrayType(@NotNull GenericArrayType type) {
             if (!getBaseType().isArray()) {
                 setMatched(false);
                 return;
@@ -45,7 +44,7 @@ public class ClassComplianceMatcher extends AbstractDelegatingTypeComplianceMatc
         }
 
         @Override
-        public void visitTypeVariable(TypeVariable<? extends GenericDeclaration> type) {
+        public void visitTypeVariable(@NotNull TypeVariable<? extends GenericDeclaration> type) {
             // We know that java.lang.Object is returned if no upper bound is defined explicitly.
             for (Type upperBoundType : type.getBounds()) {
                 if (!getDelegate().match(getBaseType(), upperBoundType)) {
@@ -56,7 +55,7 @@ public class ClassComplianceMatcher extends AbstractDelegatingTypeComplianceMatc
         }
 
         @Override
-        public void visitClass(Class<?> clazz) {
+        public void visitClass(@NotNull Class<?> clazz) {
             boolean matched = isStrict() ? getBaseType() == clazz : getBaseType().isAssignableFrom(clazz);
             setMatched(matched);
         }
@@ -65,11 +64,11 @@ public class ClassComplianceMatcher extends AbstractDelegatingTypeComplianceMatc
     public ClassComplianceMatcher() {
     }
 
-    public ClassComplianceMatcher(TypeComplianceMatcher<Type> delegate) {
+    public ClassComplianceMatcher(@NotNull TypeComplianceMatcher<Type> delegate) {
         super(delegate);
     }
 
-    /** {@inheritDoc} */
+    @NotNull
     @Override
     protected TypeVisitor getVisitor() {
         return visitor;

@@ -1,41 +1,43 @@
 package org.harmony.jenome.match;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.lang.reflect.Type;
 
 /**
- * Defines general contract for checking if particular type may be used in place of another type.
- * <p/>
- * Implementations of this interface are assumed to be thread-safe.
+ * <p>Defines general contract for checking if particular type may be used in place of another type.</p>
+ * <p>Implementations of this interface are assumed to be thread-safe.</p>
  *
  * @author Denis Zhdanov
- * @param <T>   target <code>'base'</code> type
+ * @param <T>   target {@code 'base'} type
  */
 public interface TypeComplianceMatcher<T extends Type> {
 
     /**
-     * Allows to check if <code>'candidate'</code> type may be used in place of <code>'base'</code> type.
-     * <p/>
-     * This method is essentially the same as {@link #match(Type, Type, boolean)} called with <code>'false'</code>
-     * as last argument
+     * <p>Allows to check if {@code 'candidate'} type may be used in place of {@code 'base'} type.</p>
+     * <p>
+     *      This method is essentially the same as {@link #match(Type, Type, boolean)} called with {@code 'false'}
+     *      as last argument
+     * </p>
      *
      * @param base          base type
      * @param candidate     candidate type
-     * @return              <code>true</code> if given <code>'candidate'</code> type may be used in place
-     *                      of <code>'base'</code> type; <code>false</code> otherwise
+     * @return              {@code true} if given {@code 'candidate'} type may be used in place
+     *                      of {@code 'base'} type; {@code false} otherwise
      */
-    boolean match(T base, Type candidate);
+    boolean match(@NotNull T base, @NotNull Type candidate);
 
     /**
-     * Allows to check if <code>'candidate'</code> type may be used in place of <code>'base'</code> type.
+     * Allows to check if {@code 'candidate'} type may be used in place of {@code 'base'} type.
      *
      * @param base              base type
      * @param candidate         candidate type
-     * @param strict            flag that shows if this is a 'strict' check, e.g. if we compare <code>Integer</code>
-     *                          to <code>Number</code> as a part of MyClass<Integer>
-     *                          to MyClass<? extends Number> comparison, the check should be non-strict but
-     *                          check of MyClass<Integer> to MyClass<Number> should be strict
-     * @return                  <code>true</code> if given <code>'candidate'</code> type may be used in place
-     *                          of <code>'base'</code> type; <code>false</code> otherwise
+     * @param strict            flag that shows if this is a 'strict' check, e.g. if we compare {@code Integer}
+     *                          to {@code Number} as a part of MyClass&lt;Integer&gt;
+     *                          to MyClass&lt;? extends Number&lt; comparison, the check should be non-strict but
+     *                          check of MyClass&lt;Integer&gt; to MyClass&lt;Number&gt; should be strict
+     * @return                  {@code true} if given {@code 'candidate'} type may be used in place
+     *                          of {@code 'base'} type; {@code false} otherwise
      */
-    boolean match(T base, Type candidate, boolean strict);
+    boolean match(@NotNull T base, @NotNull Type candidate, boolean strict);
 }

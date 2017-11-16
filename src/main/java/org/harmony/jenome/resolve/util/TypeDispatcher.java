@@ -1,17 +1,14 @@
 package org.harmony.jenome.resolve.util;
 
 import org.harmony.jenome.resolve.TypeVisitor;
+import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.*;
 
 /**
- * Allows to dispatch object reference of static type {@link Type} to particular subtype if any.
- * <p/>
- * This class is not singleton but offers single=point-of-usage field {@link #INSTANCE}.
- * <p/>
- * Thread-safe.
- *
- * @author Denis Zhdanov
+ * <p>Allows to dispatch object reference of static type {@link Type} to particular subtype if any.</p>
+ * <p>This class is not singleton but offers single-point-of-usage field {@link #INSTANCE}.</p>
+ * <p>Thread-safe.</p>
  */
 public class TypeDispatcher {
 
@@ -19,33 +16,24 @@ public class TypeDispatcher {
     public static final TypeDispatcher INSTANCE = new TypeDispatcher();
 
     /**
-     * Allows to dispatch given <code>'type'</code> to the actual type to the given visitor.
-     * <p/>
-     * <b>Note:<b> there is a theoretical possibility that given <code>'type'</code> reference corresponds
-     * to more than one target type defined at {@link TypeVisitor} (e.g. it may implement {@link ParameterizedType}
-     * and {@link WildcardType} interfaces). All corresponding <code>'visitParameterizedType()'</code> methods are called then
-     * (their order is undefined).
-     * <p/>
-     * The only exception to the rules described above is a {@link TypeVisitor#visitType(Type)} - it's called
-     * <b>only</b> when given <code>'type'</code> object doesn't implement any interested {@link Type}
-     * sub-interface and it's not IS-A {@link Class}.
-     * <p/>
-     * Thread-safe.
+     * <p>Allows to dispatch given {@code 'type'} to the actual type to the given visitor.</p>
+     * <p>
+     *     <b>Note:<b> there is a theoretical possibility that given {@code 'type'} reference corresponds
+     *     to more than one target type defined at {@link TypeVisitor} (e.g. it might implement
+     *     {@link ParameterizedType} and {@link WildcardType} interfaces). All corresponding
+     *     methods are called then (their order is undefined).
+     * </p>
+     * <p>
+     *      The only exception to the rules described above is a {@link TypeVisitor#visitType(Type)} - it's called
+     *      <b>only</b> when given {@code 'type'} object doesn't implement any interested {@link Type}
+     *      sub-interface and it's not IS-A {@link Class}.
+     * </p>
+     * <p>Thread-safe.</p>
      *
      * @param type      target {@link Type} object to dispatch
      * @param visitor   visitor to use for type dispatching
-     * @throws IllegalArgumentException     if any of the given arguments is <code>null</code>
      */
-    public void dispatch(Type type, TypeVisitor visitor) throws IllegalArgumentException {
-        if (type == null) {
-            throw new IllegalArgumentException("Can't process TypeDispatcher.dispatch(). Reason: given 'type' "
-                                               + "argument is null");
-        }
-        if (visitor == null) {
-            throw new IllegalArgumentException("Can't process TypeDispatcher.dispatch(). Reason: given 'visitor' "
-                                               + "argument is null");
-        }
-
+    public void dispatch(@NotNull Type type, @NotNull TypeVisitor visitor) {
         boolean matched = false;
 
         if (type instanceof ParameterizedType) {

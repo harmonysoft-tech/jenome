@@ -5,6 +5,8 @@ import org.harmony.jenome.resolve.TypeArgumentResolver;
 import org.harmony.jenome.resolve.TypeVisitor;
 import org.harmony.jenome.resolve.impl.DefaultTypeArgumentResolver;
 import org.harmony.jenome.resolve.util.TypeDispatcher;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -13,52 +15,54 @@ import java.util.Stack;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * {@link TypeComplianceMatcher} implementation that is based on GoF <code>'Template Method'</code> pattern.
- * <p/>
- * I.e. this class defines general algorithm, offers useful facilities for subclasses and requires them to implement
- * particular functionality.
- * <p/>
- * Thread-safe.
+ * <p>
+ *      {@link TypeComplianceMatcher} implementation that is based on GoF {@code 'Template Method'} pattern.
+ * </p>
+ * <p>
+ *      I.e. this class defines general algorithm, offers useful facilities for subclasses and requires
+ *      them to implement particular functionality.
+ * </p>
+ * <p>Thread-safe.</p>
  *
- * @author Denis Zhdanov
- * @param <T>   target <code>'base'</code> type
+ * @param <T>   target {@code 'base'} type
  * @see #match(Type, Type, boolean)
  */
 public abstract class AbstractTypeComplianceMatcher<T extends Type> implements TypeComplianceMatcher<T> {
 
     /**
-     * Holds stack of flags that indicate if <code>'strict'</code> check is performed
-     * (check {@link #match(Type, Type, boolean)}) contract for more details.
-     * <p/>
-     * We use static variable here in order to be able to keep track of <code>'strict'</code> value across
-     * multiple instances of underlying classes.
+     * <p>
+     *      Holds stack of flags that indicate if {@code 'strict'} check is performed
+     *      (check {@link #match(Type, Type, boolean)}) contract for more details.
+     * </p>
+     * <p>
+     *      We use static variable here in order to be able to keep track of {@code 'strict'} value across
+     *      multiple instances of underlying classes.
+     * </p>
      */
-    private static final ThreadLocal<Stack<Boolean>> STRICT = new ThreadLocal<Stack<Boolean>>();
+    private static final ThreadLocal<Stack<Boolean>> STRICT = new ThreadLocal<>();
     static {
-        Stack<Boolean> stack = new Stack<Boolean>();
+        Stack<Boolean> stack = new Stack<>();
         stack.push(false);
         STRICT.set(stack);
     }
 
     /**
-     * Stores <code>'base'</code> type used in comparison. That type is available to actual implementations
-     * via {@link #getBaseType()} method.
-     * <p/>
-     * We use stack of values here in order to be able to handle the situation when the same matcher implementation
-     * is used more than one during the same type comparison. Example of such a situation is comparison of
-     * {@code Comparable<Collection<Comparable<? extends Number>>>} vs
-     * {@code Comparable<Collection<Comparable<Long>>>}. Matcher that works with {@link ParameterizedType} is used
-     * for different types here ({@link Comparable} and {@link Collection}), so, we need to keep track of base
-     * type between those comparisons.
+     * <p>
+     *      Stores {@code 'base'} type used in comparison. That type is available to actual implementations
+     *      via {@link #getBaseType()} method.
+     * </p>
+     * <p>
+     *      We use stack of values here in order to be able to handle the situation when the same matcher
+     *      implementation is used more than one during the same type comparison. Example of such a situation
+     *      is comparison of {@code Comparable<Collection<Comparable<? extends Number>>>} vs
+     *      {@code Comparable<Collection<Comparable<Long>>>}. Matcher that works with {@link ParameterizedType}
+     *      is used for different types here ({@link Comparable} and {@link Collection}), so, we need to keep
+     *      track of base type between those comparisons.
+     * </p>
      */
-    private final ThreadLocal<Stack<T>>                 baseType             = new ThreadLocal<Stack<T>>() {
-        @Override
-        protected Stack<T> initialValue() {
-            return new Stack<T>();
-        }
-    };
-    private final ThreadLocal<Boolean>                  matched              = new ThreadLocal<Boolean>();
-    private final AtomicReference<TypeArgumentResolver> typeArgumentResolver = new AtomicReference<TypeArgumentResolver>();
+    private final ThreadLocal<Stack<T>>                 baseType             = ThreadLocal.withInitial(Stack::new);
+    private final ThreadLocal<Boolean>                  matched              = new ThreadLocal<>();
+    private final AtomicReference<TypeArgumentResolver> typeArgumentResolver = new AtomicReference<>();
     private final TypeDispatcher                        typeDispatcher       = new TypeDispatcher();
 
     protected AbstractTypeComplianceMatcher() {
@@ -66,9 +70,8 @@ public abstract class AbstractTypeComplianceMatcher<T extends Type> implements T
         setTypeArgumentResolver(DefaultTypeArgumentResolver.INSTANCE);
     }
 
-    /** {@inheritDoc} */
     @Override
-    public boolean match(T base, Type candidate) throws IllegalArgumentException {
+    public boolean match(@NotNull T base, @NotNull Type candidate) throws IllegalArgumentException {
         return match(base, candidate, false);
     }
 
@@ -76,37 +79,29 @@ public abstract class AbstractTypeComplianceMatcher<T extends Type> implements T
      * Template method that defines basic match algorithm:
      * <ol>
      *     <li>
-     *          given <code>'base'</code> type is remembered at thread-local variable and is available
+     *          given {@code 'base'} type is remembered at thread-local variable and is available
      *          to subclasses via {@link #getBaseType()};
      *     </li>
-     *     <li>given <code>'strict'</code> parameter value is exposed to subclasses via {@link #isStrict()} method;</li>
+     *     <li>given {@code 'strict'} parameter value is exposed to subclasses via {@link #isStrict()} method;</li>
      *     <li>
      *          subclass is asked for {@link TypeVisitor} implementation that contains all evaluation
      *          logic ({@link #getVisitor()}). That logic is assumed to store its processing result
      *          via {@link #setMatched(boolean)} method. If that method is not called it's assumed that
-     *          result is <code>false</code>;
+     *          result is {@code false};
      *     </li>
      * </ol>
      *
      * @param base              base type
      * @param candidate         candidate type
-     * @param strict            flag that shows if this is a 'strict' check, e.g. if we compare <code>Integer</code>
-     *                          to <code>Number</code> as a part of MyClass<Integer>
+     * @param strict            flag that shows if this is a 'strict' check, e.g. if we compare {@code Integer}
+     *                          to {@code Number} as a part of MyClass&lt;Integer&gt;
      *                          to MyClass<? extends Number> comparison, the check should be non-strict but
-     *                          check of MyClass<Integer> to MyClass<Number> should be strict
-     * @return                  <code>true</code> if given <code>'candidate'</code> type may be used in place
-     *                          of <code>'base'</code> type; <code>false</code> otherwise
+     *                          check of MyClass&lt;Integer&gt; to MyClass&lt;Number&gt; should be strict
+     * @return                  {@code true} if given {@code 'candidate'} type may be used in place
+     *                          of {@code 'base'} type; {@code false} otherwise
      */
     @Override
-    public boolean match(T base, Type candidate, boolean strict) {
-        if (base == null) {
-            throw new IllegalArgumentException("Can't process AbstractTypeComplianceMatcher.match(). Reason: given "
-                                               + "'base' argument is null");
-        }
-        if (candidate == null) {
-            throw new IllegalArgumentException("Can't process AbstractTypeComplianceMatcher.match(). Reason: given "
-                                               + "'candidate' argument is null");
-        }
+    public boolean match(@NotNull T base, @NotNull Type candidate, boolean strict) {
         baseType.get().push(base);
         STRICT.get().push(strict);
         try {
@@ -127,6 +122,7 @@ public abstract class AbstractTypeComplianceMatcher<T extends Type> implements T
      *
      * @return      type argument resolver to use
      */
+    @NotNull
     public TypeArgumentResolver getTypeArgumentResolver() {
         return typeArgumentResolver.get();
     }
@@ -137,28 +133,31 @@ public abstract class AbstractTypeComplianceMatcher<T extends Type> implements T
      *
      * @param typeArgumentResolver      custom type argument resolver to use
      */
-    public void setTypeArgumentResolver(TypeArgumentResolver typeArgumentResolver) {
+    public void setTypeArgumentResolver(@NotNull TypeArgumentResolver typeArgumentResolver) {
         this.typeArgumentResolver.set(typeArgumentResolver);
     }
 
     /**
-     * Assumed to be implemented at subclass and contain actual comparison logic.
-     * <p/>
-     * Check {@link #match(Type, Type, boolean)} contract for more details about how the visitor should
-     * use various processing parameters and store processing result.
+     * <p>Assumed to be implemented at subclass and contain actual comparison logic.</p>
+     * <p>
+     *      Check {@link #match(Type, Type, boolean)} contract for more details about how the visitor should
+     *      use various processing parameters and store processing result.
+     * </p>
      *
      * @return      visitor that contains target comparison logic
      */
+    @NotNull
     protected abstract TypeVisitor getVisitor();
 
     /**
-     * Allows to retrieve <code>'base'</code> type given to {@link #match(Type, Type, boolean)}
+     * Allows to retrieve {@code 'base'} type given to {@link #match(Type, Type, boolean)}
      * ({@link #match(Type, Type)}).
      *
-     * @return      <code>'base'</code> type given to {@link #match(Type, Type, boolean)} ({@link #match(Type, Type)})
-     *              if this method is called during <code>'match()'</code> method call; <code>null</code> if this
-     *              method is called before or after <code>'match()'</code> call
+     * @return      {@code 'base'} type given to {@link #match(Type, Type, boolean)} ({@link #match(Type, Type)})
+     *              if this method is called during {@code 'match()'} method call; {@code null} if this
+     *              method is called before or after {@code 'match()'} call
      */
+    @Nullable
     protected T getBaseType() {
         return baseType.get().peek();
     }
@@ -173,21 +172,20 @@ public abstract class AbstractTypeComplianceMatcher<T extends Type> implements T
     }
 
     /**
-     * @return      <code>'strict'</code> parameter given to {@link #match(Type, Type, boolean)} method
+     * @return      {@code 'strict'} parameter given to {@link #match(Type, Type, boolean)} method
      */
     protected boolean isStrict() {
         return STRICT.get().peek();
     }
 
     /**
-     * Allows to dispatch given type against given visitor.
-     * <p/>
-     * Follows {@link TypeDispatcher#dispatch(Type, TypeVisitor)} contract.
+     * <p>Allows to dispatch given type against given visitor.</p>
+     * <p>Follows {@link TypeDispatcher#dispatch(Type, TypeVisitor)} contract.</p>
      *
      * @param type          type to dispatch
      * @param visitor       visitor to use during the dispatching
      */
-    protected void dispatch(Type type, TypeVisitor visitor) {
+    protected void dispatch(@NotNull Type type, @NotNull TypeVisitor visitor) {
         typeDispatcher.dispatch(type, visitor);
     }
 

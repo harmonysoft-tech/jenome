@@ -3,17 +3,15 @@ package org.harmony.jenome.match.impl;
 import org.harmony.jenome.match.TypeComplianceMatcher;
 import org.harmony.jenome.resolve.TypeVisitor;
 import org.harmony.jenome.resolve.impl.TypeVisitorAdapter;
+import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.*;
 
-/**
- * @author Denis Zhdanov
- */
 public class GenericArrayTypeComplianceMatcher extends AbstractDelegatingTypeComplianceMatcher<GenericArrayType> {
 
     private final TypeVisitor visitor = new TypeVisitorAdapter() {
         @Override
-        public void visitGenericArrayType(GenericArrayType type) {
+        public void visitGenericArrayType(@NotNull GenericArrayType type) {
             setMatched(getDelegate().match(
                     getBaseType().getGenericComponentType(), type.getGenericComponentType(), isStrict()
             ));
@@ -23,11 +21,11 @@ public class GenericArrayTypeComplianceMatcher extends AbstractDelegatingTypeCom
     public GenericArrayTypeComplianceMatcher() {
     }
 
-    public GenericArrayTypeComplianceMatcher(TypeComplianceMatcher<Type> delegate) {
+    public GenericArrayTypeComplianceMatcher(@NotNull TypeComplianceMatcher<Type> delegate) {
         super(delegate);
     }
 
-    /** {@inheritDoc} */
+    @NotNull
     @Override
     protected TypeVisitor getVisitor() {
         return visitor;

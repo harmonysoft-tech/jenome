@@ -1,5 +1,5 @@
-group 'org.harmony'
-version '1.0-SNAPSHOT'
+group 'tech.harmonysoft'
+version '1.0.0'
 
 apply plugin: 'java'
 

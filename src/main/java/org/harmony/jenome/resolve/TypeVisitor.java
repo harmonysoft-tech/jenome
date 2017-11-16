@@ -1,23 +1,23 @@
 package org.harmony.jenome.resolve;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.lang.reflect.*;
 
 /**
- * Stands for the visitor from <code>GoF Visitor</code> pattern for {@link Type} dispatching.
- *
- * @author Denis Zhdanov
+ * A {@code GoF Visitor} for {@link Type} dispatching.
  */
 public interface TypeVisitor {
 
-    void visitParameterizedType(ParameterizedType type);
+    void visitParameterizedType(@NotNull ParameterizedType type);
 
-    void visitWildcardType(WildcardType type);
+    void visitWildcardType(@NotNull WildcardType type);
 
-    void visitGenericArrayType(GenericArrayType type);
+    void visitGenericArrayType(@NotNull GenericArrayType type);
 
-    void visitTypeVariable(TypeVariable<? extends GenericDeclaration> type);
+    void visitTypeVariable(@NotNull TypeVariable<? extends GenericDeclaration> type);
 
-    void visitClass(Class<?> clazz);
+    void visitClass(@NotNull Class<?> clazz);
 
-    void visitType(Type type);
+    void visitType(@NotNull Type type);
 }

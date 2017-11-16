@@ -3,19 +3,18 @@ package org.harmony.jenome.match.impl;
 import org.harmony.jenome.match.TypeComplianceMatcher;
 import org.harmony.jenome.resolve.TypeVisitor;
 import org.harmony.jenome.resolve.impl.TypeVisitorAdapter;
+import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.*;
 
 /**
  * Allows to check if given type may be used in place of base {@link ParameterizedType}.
- *
- * @author Denis Zhdanov
  */
 public class ParameterizedTypeComplianceMatcher extends AbstractDelegatingTypeComplianceMatcher<ParameterizedType> {
 
     private final TypeVisitor visitor = new TypeVisitorAdapter() {
         @Override
-        public void visitParameterizedType(ParameterizedType candidateType) {
+        public void visitParameterizedType(@NotNull ParameterizedType candidateType) {
             // Return eagerly if raw types don't match.
             if (!getDelegate().match(getBaseType().getRawType(), candidateType.getRawType(), isStrict())) {
                 return;
@@ -60,7 +59,7 @@ public class ParameterizedTypeComplianceMatcher extends AbstractDelegatingTypeCo
         }
 
         @Override
-        public void visitWildcardType(WildcardType wildcardType) {
+        public void visitWildcardType(@NotNull WildcardType wildcardType) {
             for (Type type : wildcardType.getUpperBounds()) {
                 if (!getDelegate().match(getBaseType(), type, true)) {
                     return;
@@ -70,7 +69,7 @@ public class ParameterizedTypeComplianceMatcher extends AbstractDelegatingTypeCo
         }
 
         @Override
-        public void visitClass(Class<?> clazz) {
+        public void visitClass(@NotNull Class<?> clazz) {
             if (!getDelegate().match(getBaseType().getRawType(), clazz, isStrict())) {
                 return;
             }
@@ -95,10 +94,11 @@ public class ParameterizedTypeComplianceMatcher extends AbstractDelegatingTypeCo
     public ParameterizedTypeComplianceMatcher() {
     }
 
-    public ParameterizedTypeComplianceMatcher(TypeComplianceMatcher<Type> delegate) {
+    public ParameterizedTypeComplianceMatcher(@NotNull TypeComplianceMatcher<Type> delegate) {
         super(delegate);
     }
 
+    @NotNull
     @Override
     protected TypeVisitor getVisitor() {
         return visitor;
@@ -111,9 +111,9 @@ public class ParameterizedTypeComplianceMatcher extends AbstractDelegatingTypeCo
      *
      * @param first     first types array to check
      * @param second    second types array to check
-     * @return          <code>true</code> if examination is successful; <code>false</code> otherwise
+     * @return          {@code true} if examination is successful; {@code false} otherwise
      */
-    private boolean checkTypeArgumentsRepetition(Type[] first, Type[] second) {
+    private boolean checkTypeArgumentsRepetition(@NotNull Type[] first, @NotNull Type[] second) {
         for (int i = 0; i < first.length; ++i) {
             for (int j = i + 1; j < first.length; ++j) {
                 if (first[i] == first[j] && second[i] != second[j]) {
