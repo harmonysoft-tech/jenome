@@ -1,12 +1,11 @@
 package tech.harmonysoft.oss.jenome.match.impl;
 
+import org.jetbrains.annotations.NotNull;
 import tech.harmonysoft.oss.jenome.match.TypeComplianceMatcher;
 import tech.harmonysoft.oss.jenome.resolve.TypeArgumentResolver;
 import tech.harmonysoft.oss.jenome.resolve.TypeVisitor;
 import tech.harmonysoft.oss.jenome.resolve.impl.DefaultTypeArgumentResolver;
 import tech.harmonysoft.oss.jenome.resolve.util.TypeDispatcher;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -157,9 +156,14 @@ public abstract class AbstractTypeComplianceMatcher<T extends Type> implements T
      *              if this method is called during {@code 'match()'} method call; {@code null} if this
      *              method is called before or after {@code 'match()'} call
      */
-    @Nullable
+    @NotNull
     protected T getBaseType() {
-        return baseType.get().peek();
+        T result = baseType.get().peek();
+        if (result == null) {
+            throw new IllegalStateException("Can't find a base type. Make sure that the call is performed during "
+                                            + "match() processing");
+        }
+        return result;
     }
 
     /**
