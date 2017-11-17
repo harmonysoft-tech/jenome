@@ -1,9 +1,8 @@
 package tech.harmonysoft.oss.jenome.match.impl;
 
-import tech.harmonysoft.oss.jenome.match.TypeComplianceMatcher;
+import org.jetbrains.annotations.NotNull;
 import tech.harmonysoft.oss.jenome.resolve.TypeVisitor;
 import tech.harmonysoft.oss.jenome.resolve.impl.TypeVisitorAdapter;
-import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.*;
 
@@ -61,7 +60,7 @@ public class TypeVariableComplianceMatcher
     public TypeVariableComplianceMatcher() {
     }
 
-    public TypeVariableComplianceMatcher(@NotNull TypeComplianceMatcher<Type> delegate) {
+    public TypeVariableComplianceMatcher(@NotNull AbstractTypeComplianceMatcher<Type> delegate) {
         super(delegate);
     }
 

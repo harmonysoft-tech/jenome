@@ -1,11 +1,12 @@
 package tech.harmonysoft.oss.jenome.match.impl;
 
-import tech.harmonysoft.oss.jenome.match.TypeComplianceMatcher;
+import org.jetbrains.annotations.NotNull;
 import tech.harmonysoft.oss.jenome.resolve.TypeVisitor;
 import tech.harmonysoft.oss.jenome.resolve.impl.TypeVisitorAdapter;
-import org.jetbrains.annotations.NotNull;
 
-import java.lang.reflect.*;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.lang.reflect.WildcardType;
 
 /**
  * Allows to check if given type may be used in place of base {@link ParameterizedType}.
@@ -94,7 +95,7 @@ public class ParameterizedTypeComplianceMatcher extends AbstractDelegatingTypeCo
     public ParameterizedTypeComplianceMatcher() {
     }
 
-    public ParameterizedTypeComplianceMatcher(@NotNull TypeComplianceMatcher<Type> delegate) {
+    public ParameterizedTypeComplianceMatcher(@NotNull AbstractTypeComplianceMatcher<Type> delegate) {
         super(delegate);
     }
 

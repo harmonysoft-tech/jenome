@@ -1,9 +1,8 @@
 package tech.harmonysoft.oss.jenome.match.impl;
 
-import tech.harmonysoft.oss.jenome.match.TypeComplianceMatcher;
+import org.jetbrains.annotations.NotNull;
 import tech.harmonysoft.oss.jenome.resolve.TypeArgumentResolver;
 import tech.harmonysoft.oss.jenome.resolve.TypeVisitor;
-import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.*;
 
@@ -44,7 +43,7 @@ public class TopLevelTypeComplianceMatcher extends AbstractDelegatingTypeComplia
     public TopLevelTypeComplianceMatcher() {
     }
 
-    public TopLevelTypeComplianceMatcher(@NotNull TypeComplianceMatcher<Type> delegate) {
+    public TopLevelTypeComplianceMatcher(@NotNull AbstractTypeComplianceMatcher<Type> delegate) {
         super(delegate);
     }
 

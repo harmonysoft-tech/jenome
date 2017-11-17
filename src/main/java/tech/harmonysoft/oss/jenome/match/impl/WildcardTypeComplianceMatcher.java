@@ -1,9 +1,8 @@
 package tech.harmonysoft.oss.jenome.match.impl;
 
-import tech.harmonysoft.oss.jenome.match.TypeComplianceMatcher;
+import org.jetbrains.annotations.NotNull;
 import tech.harmonysoft.oss.jenome.resolve.TypeVisitor;
 import tech.harmonysoft.oss.jenome.resolve.impl.TypeVisitorAdapter;
-import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.*;
 
@@ -140,13 +139,13 @@ public class WildcardTypeComplianceMatcher extends AbstractDelegatingTypeComplia
         }
     };
 
-    private final ThreadLocal<ParameterizedType> parameterizedTypeHolder = new ThreadLocal<ParameterizedType>();
-    private final ThreadLocal<GenericArrayType> genericArrayHolder = new ThreadLocal<GenericArrayType>();
+    private final ThreadLocal<ParameterizedType> parameterizedTypeHolder = new ThreadLocal<>();
+    private final ThreadLocal<GenericArrayType> genericArrayHolder = new ThreadLocal<>();
 
     public WildcardTypeComplianceMatcher() {
     }
 
-    public WildcardTypeComplianceMatcher(@NotNull TypeComplianceMatcher<Type> delegate) {
+    public WildcardTypeComplianceMatcher(@NotNull AbstractTypeComplianceMatcher<Type> delegate) {
         super(delegate);
     }
 

@@ -1,19 +1,11 @@
 package tech.harmonysoft.oss.jenome.match.impl;
 
-import tech.harmonysoft.oss.jenome.match.TypeComplianceMatcher;
+import org.jetbrains.annotations.NotNull;
 import tech.harmonysoft.oss.jenome.resolve.TypeVisitor;
 import tech.harmonysoft.oss.jenome.resolve.impl.TypeVisitorAdapter;
-import tech.harmonysoft.oss.jenome.resolve.util.GenericsHelper;
-import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.*;
 
-/**
- * <p>Allows to check if particular class may be matched to particular type.</p>
- * // TODO den fix
- * <p>Provides actual functionality described at the contract of {@link GenericsHelper#match(Type, Class)} method.</p>
- * <p>Thread-safe.</p>
- */
 public class ClassComplianceMatcher extends AbstractDelegatingTypeComplianceMatcher<Class<?>> {
 
     private final TypeVisitor visitor = new TypeVisitorAdapter() {
@@ -64,7 +56,7 @@ public class ClassComplianceMatcher extends AbstractDelegatingTypeComplianceMatc
     public ClassComplianceMatcher() {
     }
 
-    public ClassComplianceMatcher(@NotNull TypeComplianceMatcher<Type> delegate) {
+    public ClassComplianceMatcher(@NotNull AbstractTypeComplianceMatcher<Type> delegate) {
         super(delegate);
     }
 

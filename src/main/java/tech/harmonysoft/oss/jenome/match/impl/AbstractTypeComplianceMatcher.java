@@ -70,7 +70,7 @@ public abstract class AbstractTypeComplianceMatcher<T extends Type> implements T
     }
 
     @Override
-    public boolean match(@NotNull T base, @NotNull Type candidate) throws IllegalArgumentException {
+    public boolean match(@NotNull T base, @NotNull Type candidate) {
         return match(base, candidate, false);
     }
 
@@ -92,14 +92,13 @@ public abstract class AbstractTypeComplianceMatcher<T extends Type> implements T
      *
      * @param base              base type
      * @param candidate         candidate type
-     * @param strict            flag that shows if this is a 'strict' check, e.g. if we compare {@code Integer}
-     *                          to {@code Number} as a part of MyClass&lt;Integer&gt;
-     *                          to MyClass<? extends Number> comparison, the check should be non-strict but
-     *                          check of MyClass&lt;Integer&gt; to MyClass&lt;Number&gt; should be strict
+     * @param strict            flag that indicates if a 'strict' check should be used, e.g. if we compare
+     *                          {@code Integer} to {@code Number} as a part of {@code MyClass<Integer>}
+     *                          to {@code MyClass<? extends Number>} comparison, the check should be non-strict but
+     *                          check for {@code MyClass<Integer>} to {@code MyClass<Number>} should be strict
      * @return                  {@code true} if given {@code 'candidate'} type may be used in place
      *                          of {@code 'base'} type; {@code false} otherwise
      */
-    @Override
     public boolean match(@NotNull T base, @NotNull Type candidate, boolean strict) {
         baseType.get().push(base);
         STRICT.get().push(strict);
@@ -110,9 +109,6 @@ public abstract class AbstractTypeComplianceMatcher<T extends Type> implements T
             baseType.get().pop();
             matched.set(null);
             STRICT.get().pop();
-            if (STRICT.get().size() == 1) { // We use stack size as an indicator if top-level comparison is done.
-                cleanup();
-            }
         }
     }
 
@@ -193,16 +189,8 @@ public abstract class AbstractTypeComplianceMatcher<T extends Type> implements T
         typeDispatcher.dispatch(type, visitor);
     }
 
-    /**
-     * Callback that can be used at subclasses in order to process the event of initial comparison finish.
-     * <p/>
-     * Default implementation (provided by this class) does nothing.
-     */
-    protected void cleanup() {
-    }
-
     private boolean isMatched() {
         Boolean matched = this.matched.get();
-        return matched == null ? false : matched;
+        return matched == Boolean.TRUE;
     }
 }

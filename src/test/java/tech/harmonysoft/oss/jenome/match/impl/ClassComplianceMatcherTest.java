@@ -1,9 +1,10 @@
 package tech.harmonysoft.oss.jenome.match.impl;
 
+import org.jetbrains.annotations.NotNull;
+import org.junit.jupiter.api.Test;
+
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import org.junit.Before;
-import org.junit.Test;
 
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
@@ -13,13 +14,7 @@ import java.util.Comparator;
 @SuppressWarnings({"UnusedDeclaration"})
 public class ClassComplianceMatcherTest {
 
-    private ClassComplianceMatcher matcher;
-
-    @Before
-    @SuppressWarnings("unchecked")
-    public void setUp() throws Exception {
-        matcher = new ClassComplianceMatcher();
-    }
+    private ClassComplianceMatcher matcher = new ClassComplianceMatcher();
 
     @Test
     public void toClass() {
@@ -34,7 +29,7 @@ public class ClassComplianceMatcherTest {
     public void toParameterizedInterfaceType() {
         class TestClass implements Comparable<String> {
             @Override
-            public int compareTo(String o) {
+            public int compareTo(@NotNull String o) {
                 return 0;
             }
         }
@@ -106,7 +101,7 @@ public class ClassComplianceMatcherTest {
     public void toUnboundGenericArray() {
         class TestClass<T> implements Comparable<T[]> {
             @Override
-            public int compareTo(T[] o) {
+            public int compareTo(@NotNull T[] o) {
                 return 0;
             }
         }
@@ -124,7 +119,7 @@ public class ClassComplianceMatcherTest {
     public void toBoundGenericArray() {
         class TestClass implements Comparable<Number[]> {
             @Override
-            public int compareTo(Number[] o) {
+            public int compareTo(@NotNull Number[] o) {
                 return 0;
             }
         }

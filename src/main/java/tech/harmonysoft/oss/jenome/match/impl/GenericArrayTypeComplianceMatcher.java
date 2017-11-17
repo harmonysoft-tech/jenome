@@ -1,11 +1,11 @@
 package tech.harmonysoft.oss.jenome.match.impl;
 
-import tech.harmonysoft.oss.jenome.match.TypeComplianceMatcher;
+import org.jetbrains.annotations.NotNull;
 import tech.harmonysoft.oss.jenome.resolve.TypeVisitor;
 import tech.harmonysoft.oss.jenome.resolve.impl.TypeVisitorAdapter;
-import org.jetbrains.annotations.NotNull;
 
-import java.lang.reflect.*;
+import java.lang.reflect.GenericArrayType;
+import java.lang.reflect.Type;
 
 public class GenericArrayTypeComplianceMatcher extends AbstractDelegatingTypeComplianceMatcher<GenericArrayType> {
 
@@ -21,7 +21,7 @@ public class GenericArrayTypeComplianceMatcher extends AbstractDelegatingTypeCom
     public GenericArrayTypeComplianceMatcher() {
     }
 
-    public GenericArrayTypeComplianceMatcher(@NotNull TypeComplianceMatcher<Type> delegate) {
+    public GenericArrayTypeComplianceMatcher(@NotNull AbstractTypeComplianceMatcher<Type> delegate) {
         super(delegate);
     }
 

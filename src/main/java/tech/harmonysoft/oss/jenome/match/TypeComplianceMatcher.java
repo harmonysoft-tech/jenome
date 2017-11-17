@@ -15,10 +15,7 @@ public interface TypeComplianceMatcher<T extends Type> {
 
     /**
      * <p>Allows to check if {@code 'candidate'} type may be used in place of {@code 'base'} type.</p>
-     * <p>
-     *      This method is essentially the same as {@link #match(Type, Type, boolean)} called with {@code 'false'}
-     *      as last argument
-     * </p>
+     * <p>E.g. a {@code Comparable<Integer>} can be used in place of {@code Comparable<? extends Number>}.</p>
      *
      * @param base          base type
      * @param candidate     candidate type
@@ -26,18 +23,4 @@ public interface TypeComplianceMatcher<T extends Type> {
      *                      of {@code 'base'} type; {@code false} otherwise
      */
     boolean match(@NotNull T base, @NotNull Type candidate);
-
-    /**
-     * Allows to check if {@code 'candidate'} type may be used in place of {@code 'base'} type.
-     *
-     * @param base              base type
-     * @param candidate         candidate type
-     * @param strict            flag that shows if this is a 'strict' check, e.g. if we compare {@code Integer}
-     *                          to {@code Number} as a part of MyClass&lt;Integer&gt;
-     *                          to MyClass&lt;? extends Number&lt; comparison, the check should be non-strict but
-     *                          check of MyClass&lt;Integer&gt; to MyClass&lt;Number&gt; should be strict
-     * @return                  {@code true} if given {@code 'candidate'} type may be used in place
-     *                          of {@code 'base'} type; {@code false} otherwise
-     */
-    boolean match(@NotNull T base, @NotNull Type candidate, boolean strict);
 }
