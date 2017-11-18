@@ -1,7 +1,11 @@
-group 'tech.harmonysoft'
-version '1.0.0'
+plugins {
+    id "tech.harmonysoft.oss.traute" version "1.0.3"
+}
 
 apply plugin: 'java'
+
+group 'tech.harmonysoft'
+version '1.0.0'
 
 sourceCompatibility = 1.8
 
@@ -12,6 +16,12 @@ repositories {
 ext {
     junitJupiterVersion = '5.0.1'
     junitPlatformVersion = '1.0.1'
+}
+
+traute {
+    javacPluginVersion = '1.0.6'
+    logFile = "$buildDir/traute.log"
+    verbose = true
 }
 
 dependencies {
