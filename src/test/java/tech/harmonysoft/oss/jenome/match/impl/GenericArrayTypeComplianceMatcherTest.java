@@ -1,9 +1,5 @@
 package tech.harmonysoft.oss.jenome.match.impl;
 
-import static junit.framework.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 import tech.harmonysoft.oss.jenome.resolve.TypeArgumentResolver;
@@ -13,6 +9,10 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class GenericArrayTypeComplianceMatcherTest {
 
