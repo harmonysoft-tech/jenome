@@ -1,7 +1,6 @@
 package tech.harmonysoft.oss.jenome.match.impl;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -9,18 +8,19 @@ import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
 import java.util.*;
 
-import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SuppressWarnings({"UnusedDeclaration", "serial"})
 public class WildcardTypeComplianceMatcherTest {
+
+    private WildcardTypeComplianceMatcher matcher = new WildcardTypeComplianceMatcher();
 
     private final WildcardType wildcard;
     private final WildcardType boundToNumber;
     private final WildcardType boundToTypeVariable;
     private final WildcardType boundToLong;
-    private WildcardTypeComplianceMatcher matcher;
 
     public WildcardTypeComplianceMatcherTest() throws NoSuchFieldException {
         wildcard = (WildcardType) ((ParameterizedType)
@@ -31,11 +31,6 @@ public class WildcardTypeComplianceMatcherTest {
                 TestClass.class.getField("field3").getGenericType()).getActualTypeArguments()[0];
         boundToLong = (WildcardType) ((ParameterizedType)
                 TestClass.class.getField("field4").getGenericType()).getActualTypeArguments()[0];
-    }
-
-    @Before
-    public void setUp() throws Exception {
-        matcher = new WildcardTypeComplianceMatcher();
     }
 
     @Test

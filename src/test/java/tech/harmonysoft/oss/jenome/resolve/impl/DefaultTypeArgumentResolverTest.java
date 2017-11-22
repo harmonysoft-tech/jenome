@@ -1,7 +1,6 @@
 package tech.harmonysoft.oss.jenome.resolve.impl;
 
 import org.jetbrains.annotations.NotNull;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import tech.harmonysoft.oss.jenome.resolve.TypeArgumentResolver;

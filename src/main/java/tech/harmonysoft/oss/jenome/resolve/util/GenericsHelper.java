@@ -114,7 +114,7 @@ public class GenericsHelper {
                                                                  @NotNull Class<?> startClass)
     {
         assert targetInterface.isAssignableFrom(startClass);
-        Stack<Class<?>> result = new Stack<Class<?>>();
+        Stack<Class<?>> result = new Stack<>();
         Class<?> classToCheck = startClass;
         while (classToCheck != null) {
             result.push(classToCheck);

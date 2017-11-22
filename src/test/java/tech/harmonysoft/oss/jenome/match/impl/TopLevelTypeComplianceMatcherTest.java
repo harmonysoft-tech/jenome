@@ -1,25 +1,19 @@
 package tech.harmonysoft.oss.jenome.match.impl;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
+import org.junit.jupiter.api.Test;
 import tech.harmonysoft.oss.jenome.resolve.TypeArgumentResolver;
-import org.junit.Before;
-import org.junit.Test;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Collection;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SuppressWarnings({"UnusedDeclaration"})
 public class TopLevelTypeComplianceMatcherTest {
 
     private final Type dummyType = new Type() {};
-    private TopLevelTypeComplianceMatcher matcher;
-
-    @Before
-    public void setUp() throws Exception {
-        matcher = new TopLevelTypeComplianceMatcher();
-    }
+    private TopLevelTypeComplianceMatcher matcher = new TopLevelTypeComplianceMatcher();
 
     @Test
     public void toParameterizedType() {

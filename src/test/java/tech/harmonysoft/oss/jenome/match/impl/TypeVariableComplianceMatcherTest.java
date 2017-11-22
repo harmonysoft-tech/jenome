@@ -1,9 +1,7 @@
 package tech.harmonysoft.oss.jenome.match.impl;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import org.junit.Before;
-import org.junit.Test;
+import org.jetbrains.annotations.NotNull;
+import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.GenericDeclaration;
 import java.lang.reflect.ParameterizedType;
@@ -11,17 +9,15 @@ import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.util.Collection;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 @SuppressWarnings({"UnusedDeclaration"})
 public class TypeVariableComplianceMatcherTest {
 
     private final TypeVariable<? extends GenericDeclaration> unboundTypeVariable = TestClass.class.getTypeParameters()[0];
     private final TypeVariable<? extends GenericDeclaration> boundTypeVariable = TestClass.class.getTypeParameters()[1];
-    private TypeVariableComplianceMatcher matcher;
-
-    @Before
-    public void setUp() throws Exception {
-        matcher = new TypeVariableComplianceMatcher();
-    }
+    private TypeVariableComplianceMatcher matcher = new TypeVariableComplianceMatcher();
 
     @Test
     public void toParameterizedType() throws NoSuchFieldException {
@@ -167,19 +163,19 @@ public class TypeVariableComplianceMatcherTest {
     public void toClass() {
         class BoundToNumber implements Comparable<Comparable<? extends Number>> {
             @Override
-            public int compareTo(Comparable<? extends Number> o) {
+            public int compareTo(@NotNull Comparable<? extends Number> o) {
                 return 0;
             }
         }
         class BoundToInteger implements Comparable<Comparable<Integer>> {
             @Override
-            public int compareTo(Comparable<Integer> o) {
+            public int compareTo(@NotNull Comparable<Integer> o) {
                 return 0;
             }
         }
         class BoundToString implements Comparable<Comparable<String>> {
             @Override
-            public int compareTo(Comparable<String> o) {
+            public int compareTo(@NotNull Comparable<String> o) {
                 return 0;
             }
         }

@@ -1,34 +1,30 @@
 package tech.harmonysoft.oss.jenome.match.impl;
 
+import org.jetbrains.annotations.NotNull;
+import org.junit.jupiter.api.Test;
+
 import java.lang.reflect.*;
 import java.util.Comparator;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SuppressWarnings({"UnusedDeclaration", "SuppressionAnnotation", "RawUseOfParameterizedType"})
 public class ParameterizedTypeComplianceMatcherTest {
 
-    private ParameterizedTypeComplianceMatcher matcher;
-
-    @Before
-    public void setUp() throws Exception {
-        matcher = new ParameterizedTypeComplianceMatcher();
-    }
+    private ParameterizedTypeComplianceMatcher matcher = new ParameterizedTypeComplianceMatcher();
 
     @Test
     public void toClass() {
         class TestClass implements Comparable<Integer> {
             @Override
-            public int compareTo(Integer o) {
+            public int compareTo(@NotNull Integer o) {
                 return 0;
             }
         }
         class RawClass implements Comparable {
             @Override
-            public int compareTo(Object o) {
+            public int compareTo(@NotNull Object o) {
                 return 0;
             }
         }
