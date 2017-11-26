@@ -8,7 +8,7 @@ import java.lang.reflect.*;
 /**
  * Implements {@link TypeVisitor} with empty mehod bodies.
  */
-public class TypeVisitorAdapter implements TypeVisitor {
+public abstract class TypeVisitorAdapter implements TypeVisitor {
 
     @Override
     public void visitParameterizedType(@NotNull ParameterizedType type) {
