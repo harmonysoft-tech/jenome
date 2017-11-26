@@ -31,19 +31,19 @@ public class JenomeResolveUtil {
      * </p>
      * Example:
      * <pre>
-     *     interface MyInterface<T> {}
-     *     class MyClass implements MyInterface<Integer> {}
+     *     interface MyInterface&lt;T&gt; {}
+     *     class MyClass implements MyInterface&lt;Integer&gt; {}
      *
-     *     getTypeArgument(new MyClass()) -> Integer.class
+     *     getTypeArgument(new MyClass()) -&gt; Integer.class
      * </pre>
      * <p>
      *     This method is assumed to be used during autowired elements organization, e.g.:
      * </p>
      * <pre>
-     *     private final Map<Type, MyInterface<?>> handlersByPayloadType;
+     *     private final Map&lt;Type, MyInterface&lt;?&gt;&gt; handlersByPayloadType;
      *
      *    {@literal @}Autowired
-     *     public MyService(Collection<MyInterface<?>> handlers) {
+     *     public MyService(Collection&lt;MyInterface&lt;?&gt;&gt; handlers) {
      *         handlersByPayloadType = handlers.stream()
      *                                         .collect(toMap(JenomeResolveUtil::getTypeArgument,
      *                                                        Function.identity()));

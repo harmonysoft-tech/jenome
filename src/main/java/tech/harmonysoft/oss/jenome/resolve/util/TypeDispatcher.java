@@ -18,7 +18,7 @@ public class TypeDispatcher {
     /**
      * <p>Allows to dispatch given {@code 'type'} to the actual type to the given visitor.</p>
      * <p>
-     *     <b>Note:<b> there is a theoretical possibility that given {@code 'type'} reference corresponds
+     *     Note: there is a theoretical possibility that given {@code 'type'} reference corresponds
      *     to more than one target type defined at {@link TypeVisitor} (e.g. it might implement
      *     {@link ParameterizedType} and {@link WildcardType} interfaces). All corresponding
      *     methods are called then (their order is undefined).

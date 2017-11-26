@@ -27,7 +27,7 @@ public class GenericsHelper {
      *      (e.g. consider the following hierarchy:
      * </p>
      * <pre>
-     * class Parent<T> implements Comparable<T> { // ... implementation}
+     * class Parent&lt;T&gt; implements Comparable&lt;T&gt; { // ... implementation}
      * class Child extends Parent {}
      * </pre>
      * <p>

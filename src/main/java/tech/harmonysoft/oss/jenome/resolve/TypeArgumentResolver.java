@@ -26,11 +26,11 @@ public interface TypeArgumentResolver {
      * </p>
      * <p>E.g. consider the following example:</p>
      * <pre>
-     *     public class Base<T> {}
+     *     public class Base&lt;T&gt; {}
      *
-     *     public class Sub<F, S> extends Base<S> {}
+     *     public class Sub&lt;F, S&gt; extends Base&lt;S&gt; {}
      *
-     *     public class TestClass extends Sub<Integer, String> {}
+     *     public class TestClass extends Sub&lt;Integer, String&gt; {}
      * </pre>
      * <ul>
      *     <li>resolve(Base.class, TestClass.class, 0) is String.class;</li>
@@ -42,7 +42,7 @@ public interface TypeArgumentResolver {
      *      (e.g. consider the following hierarchy:
      * </p>
      * <pre>
-     *     class Parent<T> implements Comparable<T> { // ... implementation}
+     *     class Parent&lt;T&gt; implements Comparable&lt;T&gt; { // ... implementation}
      *
      *     class Child extends Parent {}
      * </pre>
