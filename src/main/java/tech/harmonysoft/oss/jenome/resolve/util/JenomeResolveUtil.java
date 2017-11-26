@@ -130,36 +130,4 @@ public class JenomeResolveUtil {
     public static <T> Map<Type, T> byTypeValue(@NotNull Collection<T> beans) {
         return beans.stream().collect(Collectors.toMap(JenomeResolveUtil::getTypeArgument, Function.identity()));
     }
-
-    interface Handler<T> {
-        void handle(T input);
-    }
-
-    class StringHandler implements Handler<String> {
-        public void handle(String input) {}
-    }
-
-    class LongHandler implements Handler<Long> {
-        public void handle(Long input) {}
-    }
-
-    class Router {
-
-        private final Map<Type, Handler<?>> handlers;
-
-        public Router(Collection<Handler<?>> handlers) {
-            this.handlers = JenomeResolveUtil.byTypeValue(handlers);
-        }
-
-        public void process(Object data) {
-            Handler handler = handlers.get(data.getClass());
-            if (handler == null) {
-                throw new IllegalArgumentException(String.format(
-                        "No handler is registered for payload of type %s. Known payload mappings: %s",
-                        data.getClass().getSimpleName(), handlers
-                ));
-            }
-            handler.handle(data);
-        }
-    }
 }
