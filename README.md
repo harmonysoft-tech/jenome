@@ -13,14 +13,14 @@ See the [LICENSE](LICENSE.md) file for license rights and limitations (MIT).
 
 Although *Java* generics are rather limited comparing to 'true' generics, it's still possible to extract and use their data in some circumstances:  
 
-Here we'are unable to extract type argument's value (*String*) given, say, a reference to the `data` field:   
+Here we are unable to extract type argument's value (*String*) given, say, a reference to the `data` field:   
 ```java
 class MyClass {
     List data = new ArrayList<String>();
 }
 ```
   
-However, here we can find out that target type argument's value is *Number*:  
+In contrast, here we can find out that target type argument's value is *Number*:  
 ```java
 class MyClass implements Comparable<Number> {
 }
@@ -104,7 +104,7 @@ typeComplianceMatcher.match(SimpleBaseClass.class.getGenericInterfaces()[0], Sim
 typeComplianceMatcher.match(SimpleBaseClass.class.getGenericInterfaces()[0], SimpleUnmatchedClass.class.getGenericSuperclass()) -> false
 ```
 
-This is a must-have functionality when we want to, say, enhance autowiring rules by type argument values. E.g. consider a spring context which has beans of the following types defined in it:  
+This is a must-have functionality when we want to, say, enhance autowiring rules by type argument values. E.g. consider a spring context with beans of the following types:  
 ```java
 MyClass<Integer>
 MyClass<Long>
